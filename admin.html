@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Admin access for the Karta Initiative India Foundation unified dataset" />
+  <title>Karta Admin Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css" />
+  
+  <style>
+    /* Admin Specific Overrides & Additions */
+    .admin-page-shell {
+      max-width: 1400px;
+    }
+    
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    
+    .admin-hero {
+      margin-bottom: 48px;
+    }
+    
+    .admin-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 16px;
+    }
+
+    .admin-lock-mark {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-full);
+      background: var(--primary-gradient);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px var(--primary-light);
+    }
+
+    .admin-card {
+      padding: 32px;
+      border-radius: var(--radius-xl);
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--surface-border);
+      box-shadow: var(--surface-shadow);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+      border: 1px solid var(--surface-border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+      transition: var(--transition-bounce);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+    }
+
+    .stat-card span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 2.5rem;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      color: var(--primary-dark);
+      line-height: 1;
+    }
+    
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    
+    .admin-actions button {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    /* Dataset Cards */
+    .dataset-cards {
+      display: grid;
+      gap: 24px;
+    }
+    
+    .feedback-card {
+      padding: 32px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--surface-border);
+      transition: var(--transition);
+    }
+    
+    .feedback-card:hover {
+      background: #FFF;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+    }
+
+    .feedback-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feedback-card-kicker {
+      font-size: 0.875rem;
+      color: var(--primary-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .feedback-card-head h4 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .feedback-card-score {
+      text-align: center;
+      padding: 12px 24px;
+      background: var(--primary-light);
+      border-radius: var(--radius-full);
+      color: var(--primary-dark);
+    }
+
+    .feedback-card-score span {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .feedback-card-score strong {
+      display: block;
+      font-size: 1.75rem;
+      font-family: var(--font-heading);
+      line-height: 1.2;
+    }
+
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .feedback-grid div {
+      padding: 16px;
+      background: rgba(255,255,255,0.6);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    
+    .feedback-grid span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    
+    .feedback-grid strong {
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .feedback-details {
+      background: #FAFAFA;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    
+    .feedback-details summary {
+      padding: 16px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    
+    .feedback-details summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    .feedback-details summary::after {
+      content: "↓";
+      transition: transform 0.3s ease;
+    }
+    
+    .feedback-details[open] summary {
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    
+    .feedback-details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .feedback-detail-list {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .feedback-detail-list p {
+      margin: 0;
+      padding: 16px;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    
+    .feedback-detail-list span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      background: rgba(255,255,255,0.5);
+      border-radius: var(--radius-lg);
+      border: 2px dashed var(--border);
+      color: var(--text-muted);
+      font-size: 1.125rem;
+    }
+    
+    @media (max-width: 900px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-bg">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+  </div>
+
+  <div class="page-shell admin-page-shell">
+    <header class="site-topbar fade-in-down">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span>
+        </div>
+        <div>
+          <div class="brand-name">KARTA</div>
+          <div class="brand-subtitle">Admin Portal</div>
+        </div>
+      </div>
+      <div class="topbar-accent" aria-hidden="true"></div>
+    </header>
+
+    <header class="admin-hero fade-in-up delay-1">
+      <p class="eyebrow">Private Access</p>
+      <h1>Unified Dataset Admin</h1>
+      <p class="lead">View, analyze, and export graduation feedback responses securely.</p>
+    </header>
+
+    <main class="admin-layout fade-in-up delay-2">
+      <!-- Login Section (Sidebar on Desktop) -->
+      <section class="admin-card">
+        <div class="admin-lock-mark">🔒</div>
+        <h2 style="margin-bottom: 8px;">Admin Sign-In</h2>
+        <p class="field-hint" style="margin-bottom: 24px;">Enter the secure passcode to unlock the dataset.</p>
+
+        <label class="field group">
+          <span class="field-label">Passcode</span>
+          <input type="password" id="adminPasscode" placeholder="Enter passcode" class="interactive-input" autocomplete="current-password" />
+          <div class="input-focus-bg"></div>
+        </label>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 32px;">
+          <button type="button" class="primary-button" id="unlockAdmin" style="width: 100%;">Unlock Dataset</button>
+          <a class="secondary-button" href="index.html" style="width: 100%;">Back to Form</a>
+        </div>
+        
+        <p class="fine-print" style="margin-top: 24px; text-align: center;">Responses are stored locally for privacy.</p>
+      </section>
+
+      <!-- Dashboard Content (Hidden by default) -->
+      <section id="adminContent" class="hidden">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Submissions</span>
+            <strong id="submissionCount">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Average Rating</span>
+            <strong id="averageRating">0.0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Latest Batch</span>
+            <strong id="latestBatch">-</strong>
+          </div>
+        </div>
+
+        <div class="admin-card" style="margin-bottom: 32px;">
+          <h3 style="margin-bottom: 24px;">Dataset Management</h3>
+          <div class="admin-actions">
+            <button type="button" class="secondary-button" id="exportJson"><i class="icon-download"></i> Export JSON</button>
+            <button type="button" class="secondary-button" id="exportCsv"><i class="icon-download"></i> Export CSV</button>
+            <button type="button" class="secondary-button" id="exportPdf"><i class="icon-file-pdf"></i> Export PDF Report</button>
+          </div>
+          
+          <div style="border-top: 1px solid var(--border); padding-top: 24px;">
+            <label class="field group" style="max-width: 400px;">
+              <span class="field-label">Import External Dataset (JSON)</span>
+              <input type="file" id="datasetFile" accept="application/json" class="interactive-input" style="padding: 12px;" />
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom: 24px;">Recent Feedback</h3>
+          <div id="datasetCards" class="dataset-cards">
+            <!-- Cards injected via JS -->
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <template id="toastTemplate">
+    <div class="toast glass-panel">
+      <i class="toast-icon">ℹ️</i>
+      <span class="toast-message"></span>
+    </div>
+  </template>
+
+  <script src="admin.js"></script>
+</body>
+</html>
