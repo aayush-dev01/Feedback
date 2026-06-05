@@ -146,13 +146,16 @@
             <fieldset class="field group">
               <legend class="field-label">4. Current Status <span class="required-asterisk">*</span></legend>
               <div class="choice-grid">
-                <label class="choice-label"><input type="radio" name="currentStatus" value="School Student" required /> <span class="choice-text">School Student</span></label>
-                <label class="choice-label"><input type="radio" name="currentStatus" value="College Student" /> <span class="choice-text">College Student</span></label>
                 <label class="choice-label"><input type="radio" name="currentStatus" value="Intern" /> <span class="choice-text">Intern</span></label>
                 <label class="choice-label"><input type="radio" name="currentStatus" value="Working Professional" /> <span class="choice-text">Working Professional</span></label>
                 <label class="choice-label"><input type="radio" name="currentStatus" value="Preparing for Higher Studies" /> <span class="choice-text">Preparing for Higher Studies</span></label>
-                <label class="choice-label"><input type="radio" name="currentStatus" value="Other" /> <span class="choice-text">Other</span></label>
+                <label class="choice-label"><input type="radio" name="currentStatus" value="Other" data-other-target="currentStatusOtherWrap" required /> <span class="choice-text">Other</span></label>
               </div>
+              <label class="field group dynamic-field hidden other-detail-field" id="currentStatusOtherWrap">
+                <span class="field-label">Please specify your current status</span>
+                <input type="text" name="currentStatusOther" placeholder="Write your current status" class="interactive-input" />
+                <div class="input-focus-bg"></div>
+              </label>
             </fieldset>
           </div>
 
@@ -193,8 +196,13 @@
                 <label class="choice-label"><input type="checkbox" name="improvementAreas" value="Technical/Digital Skills" /> <span class="choice-text">Technical/Digital Skills</span></label>
                 <label class="choice-label"><input type="checkbox" name="improvementAreas" value="Problem Solving" /> <span class="choice-text">Problem Solving</span></label>
                 <label class="choice-label"><input type="checkbox" name="improvementAreas" value="Networking" /> <span class="choice-text">Networking</span></label>
-                <label class="choice-label"><input type="checkbox" name="improvementAreas" value="Other" /> <span class="choice-text">Other</span></label>
+                <label class="choice-label"><input type="checkbox" name="improvementAreas" value="Other" data-other-target="improvementAreasOtherWrap" /> <span class="choice-text">Other</span></label>
               </div>
+              <label class="field group dynamic-field hidden other-detail-field" id="improvementAreasOtherWrap">
+                <span class="field-label">Please specify the other improvement area</span>
+                <input type="text" name="improvementAreasOther" placeholder="Write the other improvement area" class="interactive-input" />
+                <div class="input-focus-bg"></div>
+              </label>
             </fieldset>
 
             <fieldset class="field group">
@@ -208,8 +216,13 @@
                 <label class="choice-label"><input type="checkbox" name="academicChallengeTypes" value="Confidence in learning" /> <span class="choice-text">Confidence in learning</span></label>
                 <label class="choice-label"><input type="checkbox" name="academicChallengeTypes" value="Technical skills" /> <span class="choice-text">Technical skills</span></label>
                 <label class="choice-label"><input type="checkbox" name="academicChallengeTypes" value="Consistency in studies" /> <span class="choice-text">Consistency in studies</span></label>
-                <label class="choice-label"><input type="checkbox" name="academicChallengeTypes" value="Other" /> <span class="choice-text">Other</span></label>
+                <label class="choice-label"><input type="checkbox" name="academicChallengeTypes" value="Other" data-other-target="academicChallengeTypesOtherWrap" /> <span class="choice-text">Other</span></label>
               </div>
+              <label class="field group dynamic-field hidden other-detail-field" id="academicChallengeTypesOtherWrap">
+                <span class="field-label">Please specify the other challenge</span>
+                <input type="text" name="academicChallengeTypesOther" placeholder="Write the other challenge" class="interactive-input" />
+                <div class="input-focus-bg"></div>
+              </label>
             </fieldset>
 
             <label class="field group">
@@ -252,8 +265,13 @@
                 <label class="choice-label"><input type="checkbox" name="personalChallenges" value="Mental/Emotional Stress" /> <span class="choice-text">Mental/Emotional Stress</span></label>
                 <label class="choice-label"><input type="checkbox" name="personalChallenges" value="Lack of Resources" /> <span class="choice-text">Lack of Resources</span></label>
                 <label class="choice-label"><input type="checkbox" name="personalChallenges" value="No Major Challenges" /> <span class="choice-text">No Major Challenges</span></label>
-                <label class="choice-label"><input type="checkbox" name="personalChallenges" value="Other" /> <span class="choice-text">Other</span></label>
+                <label class="choice-label"><input type="checkbox" name="personalChallenges" value="Other" data-other-target="personalChallengesOtherWrap" /> <span class="choice-text">Other</span></label>
               </div>
+              <label class="field group dynamic-field hidden other-detail-field" id="personalChallengesOtherWrap">
+                <span class="field-label">Please specify the other personal challenge</span>
+                <input type="text" name="personalChallengesOther" placeholder="Write the other personal challenge" class="interactive-input" />
+                <div class="input-focus-bg"></div>
+              </label>
             </fieldset>
 
             <label class="field group">
@@ -405,8 +423,13 @@
                 <label class="choice-label"><input type="radio" name="postGradPlans" value="Higher education" /> <span class="choice-text">Pursuing higher education</span></label>
                 <label class="choice-label"><input type="radio" name="postGradPlans" value="Competitive exams" /> <span class="choice-text">Preparing for competitive exams</span></label>
                 <label class="choice-label"><input type="radio" name="postGradPlans" value="Entrepreneurship" /> <span class="choice-text">Entrepreneurship / Starting a venture</span></label>
-                <label class="choice-label"><input type="radio" name="postGradPlans" value="Other" /> <span class="choice-text">Other</span></label>
+                <label class="choice-label"><input type="radio" name="postGradPlans" value="Other" data-other-target="postGradPlansOtherWrap" /> <span class="choice-text">Other</span></label>
               </div>
+              <label class="field group dynamic-field hidden other-detail-field" id="postGradPlansOtherWrap">
+                <span class="field-label">Please specify your post-graduation plan</span>
+                <input type="text" name="postGradPlansOther" placeholder="Write your post-graduation plan" class="interactive-input" />
+                <div class="input-focus-bg"></div>
+              </label>
             </fieldset>
 
             <label class="field group">

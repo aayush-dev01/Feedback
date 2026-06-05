@@ -25,6 +25,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const feedbackForm = document.getElementById("feedbackForm");
   const academicChallengeDetailsWrap = document.getElementById("academicChallengeDetailsWrap");
   const academicChallengeDetails = feedbackForm.querySelector('[name="academicChallengeDetails"]');
+  const otherOptionInputs = Array.from(feedbackForm.querySelectorAll("[data-other-target]"));
+
+  function setOtherFieldState(input) {
+    const targetId = input.dataset.otherTarget;
+    const wrap = document.getElementById(targetId);
+    if (!wrap) return;
+
+    const textInput = wrap.querySelector("input, textarea");
+    const isActive = input.type === "checkbox" ? input.checked : input.checked;
+
+    wrap.classList.toggle("hidden", !isActive);
+    if (textInput) {
+      textInput.required = isActive;
+      if (!isActive) {
+        textInput.value = "";
+      }
+    }
+  }
+
+  function syncOtherFields() {
+    otherOptionInputs.forEach(setOtherFieldState);
+  }
 
   feedbackForm.addEventListener("change", (event) => {
     if (event.target && event.target.name === "academicChallenges") {
@@ -39,6 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
         academicChallengeDetails.value = "";
       }
     }
+
+    if (event.target) {
+      const groupedOtherInputs = otherOptionInputs.filter((input) => input.name === event.target.name);
+      if (groupedOtherInputs.length) {
+        groupedOtherInputs.forEach(setOtherFieldState);
+      }
+    }
   });
 
   // Ensure initial state
@@ -46,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
     academicChallengeDetailsWrap.classList.add("hidden");
     academicChallengeDetails.required = false;
   }
+
+  syncOtherFields();
 
   // Toast System
   const toastTemplate = document.getElementById("toastTemplate");
@@ -103,6 +134,28 @@ document.addEventListener("DOMContentLoaded", () => {
     return formData.getAll(key).filter(Boolean);
   }
 
+  function textValue(formData, key) {
+    return String(formData.get(key) || "").trim();
+  }
+
+  function resolveOtherSingle(formData, fieldName, otherFieldName) {
+    const selected = textValue(formData, fieldName);
+    if (selected !== "Other") return selected;
+
+    const otherValue = textValue(formData, otherFieldName);
+    return otherValue ? `Other: ${otherValue}` : "Other";
+  }
+
+  function resolveOtherMulti(formData, fieldName, otherFieldName) {
+    const values = formValues(formData, fieldName);
+    if (!values.includes("Other")) return values;
+
+    const otherValue = textValue(formData, otherFieldName);
+    return values
+      .filter((value) => value !== "Other")
+      .concat(otherValue ? [`Other: ${otherValue}`] : ["Other"]);
+  }
+
   function toNumber(value) {
     return Number.parseInt(value, 10) || 0;
   }
@@ -111,42 +164,42 @@ document.addEventListener("DOMContentLoaded", () => {
   function collectSubmission(form) {
     const formData = new FormData(form);
     const academicChallenges = formData.get("academicChallenges");
-    const challengeDetails = String(formData.get("academicChallengeDetails") || "").trim();
+    const challengeDetails = textValue(formData, "academicChallengeDetails");
 
     return {
       submittedAt: new Date().toISOString(),
-      fullName: String(formData.get("fullName") || "").trim(),
-      email: String(formData.get("email") || "").trim(),
-      institution: String(formData.get("institution") || "").trim(),
-      degreeField: String(formData.get("degreeField") || "").trim(),
-      journeySummary: String(formData.get("journeySummary") || "").trim(),
-      batchProgram: String(formData.get("batchProgram") || "").trim(),
-      currentStatus: String(formData.get("currentStatus") || "").trim(),
+      fullName: textValue(formData, "fullName"),
+      email: textValue(formData, "email"),
+      institution: textValue(formData, "institution"),
+      degreeField: textValue(formData, "degreeField"),
+      journeySummary: textValue(formData, "journeySummary"),
+      batchProgram: textValue(formData, "batchProgram"),
+      currentStatus: resolveOtherSingle(formData, "currentStatus", "currentStatusOther"),
       overallExperience: toNumber(formData.get("overallExperience")),
-      improvementAreas: formValues(formData, "improvementAreas"),
-      academicChallengeTypes: formValues(formData, "academicChallengeTypes"),
-      mostImpactfulPart: String(formData.get("mostImpactfulPart") || "").trim(),
+      improvementAreas: resolveOtherMulti(formData, "improvementAreas", "improvementAreasOther"),
+      academicChallengeTypes: resolveOtherMulti(formData, "academicChallengeTypes", "academicChallengeTypesOther"),
+      mostImpactfulPart: textValue(formData, "mostImpactfulPart"),
       academicChallenges: academicChallenges === "Yes",
       academicChallengeDetails: academicChallenges === "Yes" ? challengeDetails : "",
-      personalChallenges: formValues(formData, "personalChallenges"),
-      mentorshipHelped: String(formData.get("mentorshipHelped") || "").trim(),
-      willingToMentor: String(formData.get("willingToMentor") || "").trim(),
-      mentorPreference: String(formData.get("mentorPreference") || "").trim(),
+      personalChallenges: resolveOtherMulti(formData, "personalChallenges", "personalChallengesOther"),
+      mentorshipHelped: textValue(formData, "mentorshipHelped"),
+      willingToMentor: textValue(formData, "willingToMentor"),
+      mentorPreference: textValue(formData, "mentorPreference"),
       teamSupport: toNumber(formData.get("teamSupport")),
       learningUsefulness: toNumber(formData.get("learningUsefulness")),
-      futureConfidence: String(formData.get("futureConfidence") || "").trim(),
+      futureConfidence: textValue(formData, "futureConfidence"),
       confidenceScale: toNumber(formData.get("confidenceScale")),
-      futureHelpfulSkills: String(formData.get("futureHelpfulSkills") || "").trim(),
-      internships: String(formData.get("internships") || "").trim(),
-      internshipExperience: String(formData.get("internshipExperience") || "").trim(),
-      internshipLesson: String(formData.get("internshipLesson") || "").trim(),
-      improvementSuggestion: String(formData.get("improvementSuggestion") || "").trim(),
-      recommendKarta: String(formData.get("recommendKarta") || "").trim(),
-      postGradPlans: String(formData.get("postGradPlans") || "").trim(),
-      carryForward: String(formData.get("carryForward") || "").trim(),
-      proudMoment: String(formData.get("proudMoment") || "").trim(),
-      advice: String(formData.get("advice") || "").trim(),
-      finalMessage: String(formData.get("finalMessage") || "").trim(),
+      futureHelpfulSkills: textValue(formData, "futureHelpfulSkills"),
+      internships: textValue(formData, "internships"),
+      internshipExperience: textValue(formData, "internshipExperience"),
+      internshipLesson: textValue(formData, "internshipLesson"),
+      improvementSuggestion: textValue(formData, "improvementSuggestion"),
+      recommendKarta: textValue(formData, "recommendKarta"),
+      postGradPlans: resolveOtherSingle(formData, "postGradPlans", "postGradPlansOther"),
+      carryForward: textValue(formData, "carryForward"),
+      proudMoment: textValue(formData, "proudMoment"),
+      advice: textValue(formData, "advice"),
+      finalMessage: textValue(formData, "finalMessage"),
     };
   }
 
@@ -169,6 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!submission.currentStatus || !submission.futureConfidence || !submission.recommendKarta) {
       return "Please answer all required choice questions.";
+    }
+
+    if (submission.currentStatus === "Other" || submission.improvementAreas.includes("Other") || submission.academicChallengeTypes.includes("Other") || submission.personalChallenges.includes("Other") || submission.postGradPlans === "Other") {
+      return "Please specify each selected Other option.";
     }
 
     if (submission.academicChallenges && !submission.academicChallengeDetails) {
@@ -217,6 +274,8 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Hide dynamic fields
       academicChallengeDetailsWrap.classList.add("hidden");
+      academicChallengeDetails.required = false;
+      syncOtherFields();
       
       // Success feedback
       showToast("Feedback submitted successfully. Thank you!", 'success');

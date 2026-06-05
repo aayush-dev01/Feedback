@@ -740,7 +740,15 @@ textarea.interactive-input {
 .rating-label:has(input:checked) {
   background: linear-gradient(135deg, rgba(243, 166, 34, 0.2), rgba(244, 178, 59, 0.16));
   border-color: rgba(243, 166, 34, 0.4);
-  box-shadow: 0 12px 26px rgba(243, 166, 34, 0.14);
+  box-shadow:
+    0 0 0 2px rgba(243, 166, 34, 0.24),
+    0 0 18px rgba(243, 166, 34, 0.34),
+    0 14px 30px rgba(243, 166, 34, 0.2);
+}
+
+.rating-label:has(input:checked) .rating-number {
+  color: #8a5200;
+  text-shadow: 0 0 12px rgba(243, 166, 34, 0.38);
 }
 
 /* Accessibility focus ring */
@@ -886,6 +894,10 @@ button {
 
 .dynamic-field {
   animation: fadeInDown 0.4s ease forwards;
+}
+
+.other-detail-field {
+  margin-top: 14px;
 }
 
 /* ─── Toast ─── */
